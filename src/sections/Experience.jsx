@@ -120,10 +120,10 @@ const Experience = () => {
                 key={exp.id}
                 className={`timeline-card-wrapper ${exp.side} ${exp.type}`}
                 style={{ top: pos.top, height: pos.height }}
-                initial={{ opacity: 0, scale: 0.9, y: 50, x: exp.side === 'left' ? -50 : 50, filter: 'blur(10px)' }}
+                initial={{ opacity: 0, scale: 0.95, y: 30, x: exp.side === 'left' ? -25 : 25, filter: 'blur(6px)' }}
                 whileInView={{ opacity: 1, scale: 1, y: 0, x: 0, filter: 'blur(0px)' }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.7, ease: [0.2, 0.8, 0.2, 1] }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
               >
                 <div className="timeline-card">
                   <div className="card-hud-border"></div>

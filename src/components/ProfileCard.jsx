@@ -15,6 +15,8 @@ const TechProfileCard = ({
   const [isMobile, setIsMobile] = useState(false);
   const orientationActiveRef = useRef(false);
   const lastValuesRef = useRef({ x: 0, y: 0 });
+  const [needsIOSPermission, setNeedsIOSPermission] = useState(false);
+  const [tiltActive, setTiltActive] = useState(false);
 
   // Detect mobile device
   useEffect(() => {
@@ -52,25 +54,22 @@ const TechProfileCard = ({
     wrapRef.current.style.setProperty('--parallaxY', '0');
   }, [isMobile]);
 
-  // Mobile: device orientation (gyroscope/accelerometer) tilt
+  // Shared orientation handler ref (so cleanup works across both flows)
+  const orientationHandlerRef = useRef(null);
+  const animFrameRef = useRef(null);
+
+  // Create the orientation handler
   useEffect(() => {
-    if (!isMobile || !enableMobileTilt || !enableTilt) return;
-    if (!wrapRef.current) return;
+    orientationHandlerRef.current = (event) => {
+      const el = wrapRef.current;
+      if (!el) return;
 
-    const el = wrapRef.current;
-    let animFrameId = null;
+      const beta = event.beta ?? 0;
+      const gamma = event.gamma ?? 0;
 
-    const handleOrientation = (event) => {
-      // beta: front-to-back tilt (-180 to 180), gamma: left-to-right tilt (-90 to 90)
-      const beta = event.beta ?? 0;   // Y-axis rotation
-      const gamma = event.gamma ?? 0; // X-axis rotation
-
-      // Normalize: map device tilt to parallax values
-      // beta ~0-90 when phone held upright, center around ~40 (typical holding angle)
       const normalizedY = Math.max(-6, Math.min(6, (beta - 40) / 6));
       const normalizedX = Math.max(-6, Math.min(6, gamma / 6));
 
-      // Smooth interpolation — higher lerp = faster, snappier response
       const lerp = 0.35;
       lastValuesRef.current.x += (normalizedX - lastValuesRef.current.x) * lerp;
       lastValuesRef.current.y += (normalizedY - lastValuesRef.current.y) * lerp;
@@ -78,51 +77,73 @@ const TechProfileCard = ({
       const smoothX = lastValuesRef.current.x;
       const smoothY = lastValuesRef.current.y;
 
-      // Convert to percentage for glow effect
       const percentX = 50 + smoothX * 10;
       const percentY = 50 + smoothY * 10;
 
-      if (animFrameId) cancelAnimationFrame(animFrameId);
-      animFrameId = requestAnimationFrame(() => {
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = requestAnimationFrame(() => {
         el.style.setProperty('--mouseX', `${clamp(percentX)}%`);
         el.style.setProperty('--mouseY', `${clamp(percentY)}%`);
         el.style.setProperty('--parallaxX', `${smoothX}`);
         el.style.setProperty('--parallaxY', `${smoothY}`);
       });
     };
+  }, []);
 
-    const startListening = () => {
-      if (orientationActiveRef.current) return;
-      orientationActiveRef.current = true;
-      window.addEventListener('deviceorientation', handleOrientation, true);
-    };
+  // Start listening to device orientation
+  const startListening = useCallback(() => {
+    if (orientationActiveRef.current) return;
+    orientationActiveRef.current = true;
+    setTiltActive(true);
+    setNeedsIOSPermission(false);
+    window.addEventListener('deviceorientation', orientationHandlerRef.current, true);
+  }, []);
 
-    // iOS 13+ requires permission request
-    if (typeof DeviceOrientationEvent !== 'undefined' &&
-        typeof DeviceOrientationEvent.requestPermission === 'function') {
-      // Auto-request on first touch of the card
-      const requestOnTouch = () => {
-        DeviceOrientationEvent.requestPermission()
-          .then((state) => {
-            if (state === 'granted') {
-              startListening();
-            }
-          })
-          .catch(console.error);
-        el.removeEventListener('touchstart', requestOnTouch);
-      };
-      el.addEventListener('touchstart', requestOnTouch, { once: true, passive: true });
+  // iOS permission request — must be called from a click handler
+  const requestIOSPermission = useCallback(() => {
+    if (typeof DeviceOrientationEvent === 'undefined') return;
+    if (typeof DeviceOrientationEvent.requestPermission !== 'function') return;
+
+    DeviceOrientationEvent.requestPermission()
+      .then((state) => {
+        if (state === 'granted') {
+          startListening();
+        } else {
+          // Permission denied — hide the prompt, tilt won't work
+          setNeedsIOSPermission(false);
+        }
+      })
+      .catch((err) => {
+        console.warn('DeviceOrientation permission error:', err);
+        setNeedsIOSPermission(false);
+      });
+  }, [startListening]);
+
+  // Mobile: set up device orientation tilt
+  useEffect(() => {
+    if (!isMobile || !enableMobileTilt || !enableTilt) return;
+
+    // Check if iOS requires permission
+    const isIOS = typeof DeviceOrientationEvent !== 'undefined' &&
+                  typeof DeviceOrientationEvent.requestPermission === 'function';
+
+    if (isIOS) {
+      // Show the "tap to enable" prompt — permission must come from a click
+      setNeedsIOSPermission(true);
     } else if (typeof DeviceOrientationEvent !== 'undefined') {
-      // Android / other browsers: no permission needed
+      // Android / other browsers: no permission needed, start immediately
       startListening();
     }
 
     return () => {
-      if (animFrameId) cancelAnimationFrame(animFrameId);
-      window.removeEventListener('deviceorientation', handleOrientation, true);
+      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      if (orientationHandlerRef.current) {
+        window.removeEventListener('deviceorientation', orientationHandlerRef.current, true);
+      }
       orientationActiveRef.current = false;
+      setTiltActive(false);
     };
-  }, [isMobile, enableMobileTilt, enableTilt]);
+  }, [isMobile, enableMobileTilt, enableTilt, startListening]);
 
   // Initialize CSS vars
   useEffect(() => {
@@ -140,6 +161,18 @@ const TechProfileCard = ({
       onPointerMove={!isMobile ? handlePointerMove : undefined}
       onPointerLeave={!isMobile ? handlePointerLeave : undefined}
     >
+
+      {/* iOS Permission Prompt — shown only when needed */}
+      {needsIOSPermission && !tiltActive && (
+        <button
+          className="ios-tilt-prompt"
+          onClick={requestIOSPermission}
+          aria-label="Enable tilt effect"
+        >
+          <span className="prompt-icon">◎</span>
+          <span className="prompt-text">Tap to enable tilt</span>
+        </button>
+      )}
       
       {/* Background Tech Panel */}
       <div className="hud-panel hud-bg-layer" style={{ transform: 'translate(calc(var(--parallaxX) * -1px), calc(var(--parallaxY) * -1px))' }}>
@@ -221,3 +254,4 @@ const TechProfileCard = ({
 };
 
 export default TechProfileCard;
+
