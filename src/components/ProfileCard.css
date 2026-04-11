@@ -206,6 +206,9 @@
   .tech-profile-wrapper {
     max-width: 350px;
   }
+  .tech-profile-wrapper.mobile-tilt {
+    touch-action: auto;
+  }
   .tech-name {
     font-size: min(3.5rem, 15vw);
   }

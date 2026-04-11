@@ -1,20 +1,36 @@
-import React, { useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 import './ProfileCard.css';
 
 const clamp = (v, min = 0, max = 100) => Math.min(Math.max(v, min), max);
-const round = (v, precision = 3) => parseFloat(v.toFixed(precision));
 
 const TechProfileCard = ({
   avatarUrl = '/profile.png',
   name = 'Abdul Saboor',
   title = 'Software Engineer | AI Enthusiast',
   enableTilt = true,
+  enableMobileTilt = true,
   className = ''
 }) => {
   const wrapRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const orientationActiveRef = useRef(false);
+  const lastValuesRef = useRef({ x: 0, y: 0 });
 
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.matchMedia('(max-width: 768px)').matches && 
+                     ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+      setIsMobile(mobile);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Desktop: pointer-based tilt
   const handlePointerMove = useCallback((event) => {
-    if (!enableTilt || !wrapRef.current) return;
+    if (!enableTilt || !wrapRef.current || isMobile) return;
     const rect = wrapRef.current.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -26,16 +42,89 @@ const TechProfileCard = ({
     wrapRef.current.style.setProperty('--mouseY', `${percentY}%`);
     wrapRef.current.style.setProperty('--parallaxX', `${(percentX - 50) / 10}`);
     wrapRef.current.style.setProperty('--parallaxY', `${(percentY - 50) / 10}`);
-  }, [enableTilt]);
+  }, [enableTilt, isMobile]);
 
   const handlePointerLeave = useCallback(() => {
-    if (!wrapRef.current) return;
+    if (!wrapRef.current || isMobile) return;
     wrapRef.current.style.setProperty('--mouseX', '50%');
     wrapRef.current.style.setProperty('--mouseY', '50%');
     wrapRef.current.style.setProperty('--parallaxX', '0');
     wrapRef.current.style.setProperty('--parallaxY', '0');
-  }, []);
+  }, [isMobile]);
 
+  // Mobile: device orientation (gyroscope/accelerometer) tilt
+  useEffect(() => {
+    if (!isMobile || !enableMobileTilt || !enableTilt) return;
+    if (!wrapRef.current) return;
+
+    const el = wrapRef.current;
+    let animFrameId = null;
+
+    const handleOrientation = (event) => {
+      // beta: front-to-back tilt (-180 to 180), gamma: left-to-right tilt (-90 to 90)
+      const beta = event.beta ?? 0;   // Y-axis rotation
+      const gamma = event.gamma ?? 0; // X-axis rotation
+
+      // Normalize: map device tilt to parallax values
+      // beta ~0-90 when phone held upright, center around ~40 (typical holding angle)
+      const normalizedY = Math.max(-5, Math.min(5, (beta - 40) / 8));
+      const normalizedX = Math.max(-5, Math.min(5, gamma / 8));
+
+      // Smooth interpolation
+      const lerp = 0.12;
+      lastValuesRef.current.x += (normalizedX - lastValuesRef.current.x) * lerp;
+      lastValuesRef.current.y += (normalizedY - lastValuesRef.current.y) * lerp;
+
+      const smoothX = lastValuesRef.current.x;
+      const smoothY = lastValuesRef.current.y;
+
+      // Convert to percentage for glow effect
+      const percentX = 50 + smoothX * 10;
+      const percentY = 50 + smoothY * 10;
+
+      if (animFrameId) cancelAnimationFrame(animFrameId);
+      animFrameId = requestAnimationFrame(() => {
+        el.style.setProperty('--mouseX', `${clamp(percentX)}%`);
+        el.style.setProperty('--mouseY', `${clamp(percentY)}%`);
+        el.style.setProperty('--parallaxX', `${smoothX}`);
+        el.style.setProperty('--parallaxY', `${smoothY}`);
+      });
+    };
+
+    const startListening = () => {
+      if (orientationActiveRef.current) return;
+      orientationActiveRef.current = true;
+      window.addEventListener('deviceorientation', handleOrientation, true);
+    };
+
+    // iOS 13+ requires permission request
+    if (typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function') {
+      // Auto-request on first touch of the card
+      const requestOnTouch = () => {
+        DeviceOrientationEvent.requestPermission()
+          .then((state) => {
+            if (state === 'granted') {
+              startListening();
+            }
+          })
+          .catch(console.error);
+        el.removeEventListener('touchstart', requestOnTouch);
+      };
+      el.addEventListener('touchstart', requestOnTouch, { once: true, passive: true });
+    } else if (typeof DeviceOrientationEvent !== 'undefined') {
+      // Android / other browsers: no permission needed
+      startListening();
+    }
+
+    return () => {
+      if (animFrameId) cancelAnimationFrame(animFrameId);
+      window.removeEventListener('deviceorientation', handleOrientation, true);
+      orientationActiveRef.current = false;
+    };
+  }, [isMobile, enableMobileTilt, enableTilt]);
+
+  // Initialize CSS vars
   useEffect(() => {
     if (!wrapRef.current) return;
     wrapRef.current.style.setProperty('--mouseX', '50%');
@@ -47,9 +136,9 @@ const TechProfileCard = ({
   return (
     <div 
       ref={wrapRef} 
-      className={`tech-profile-wrapper ${className}`.trim()}
-      onPointerMove={handlePointerMove}
-      onPointerLeave={handlePointerLeave}
+      className={`tech-profile-wrapper ${isMobile ? 'mobile-tilt' : ''} ${className}`.trim()}
+      onPointerMove={!isMobile ? handlePointerMove : undefined}
+      onPointerLeave={!isMobile ? handlePointerLeave : undefined}
     >
       
       {/* Background Tech Panel */}
