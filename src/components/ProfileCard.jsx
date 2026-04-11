@@ -67,11 +67,11 @@ const TechProfileCard = ({
 
       // Normalize: map device tilt to parallax values
       // beta ~0-90 when phone held upright, center around ~40 (typical holding angle)
-      const normalizedY = Math.max(-5, Math.min(5, (beta - 40) / 8));
-      const normalizedX = Math.max(-5, Math.min(5, gamma / 8));
+      const normalizedY = Math.max(-6, Math.min(6, (beta - 40) / 6));
+      const normalizedX = Math.max(-6, Math.min(6, gamma / 6));
 
-      // Smooth interpolation
-      const lerp = 0.12;
+      // Smooth interpolation — higher lerp = faster, snappier response
+      const lerp = 0.35;
       lastValuesRef.current.x += (normalizedX - lastValuesRef.current.x) * lerp;
       lastValuesRef.current.y += (normalizedY - lastValuesRef.current.y) * lerp;
 

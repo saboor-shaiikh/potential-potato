@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
 // Constant galaxy generator 
@@ -20,9 +20,11 @@ import Arsenal from './sections/Arsenal';
 import Contact from './sections/Contact';
 import Footer from './sections/Footer';
 import WhatsappWidget from './components/WhatsappWidget';
+import LoadingScreen from './components/LoadingScreen';
 
 function App() {
   const aboutRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Generate deterministic randomized stars on load (Optimized counts for battery/performance on mobile)
   const starLayer1 = useMemo(() => generateStars(150), []);
@@ -41,7 +43,9 @@ function App() {
   const heroBlur = useTransform(scrollYProgress, [0, 1], ["blur(0px)", "blur(12px)"]);
 
   return (
-    <div className="app-container" style={{ backgroundColor: 'var(--bg-base)', minHeight: '100vh', position: 'relative' }}>
+    <>
+      {isLoading && <LoadingScreen onFinished={() => setIsLoading(false)} />}
+      <div className="app-container" style={{ backgroundColor: 'var(--bg-base)', minHeight: '100vh', position: 'relative' }}>
       <Navbar />
       
       {/* Hero Container: Sticks to the top, animated by the scroll of the About section */}
@@ -104,6 +108,7 @@ function App() {
 
       <WhatsappWidget />
     </div>
+    </>
   );
 }
 
