@@ -1,18 +1,53 @@
-# React + Vite
+# Saboor's Interactive Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A hyper-modern, interactive web developer portfolio designed with an immersive "Space & Galactic" aesthetic. Built entirely with React, Vite, and Framer Motion, the portfolio features complex glassmorphism UI structures, a custom physics-driven tech stack cloud, fluid scrolling anchors, and an integrated, serverless contact pipeline.
 
-Currently, two official plugins are available:
+## 🚀 Live Demo
+*(Insert Live link here after deployment)*
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🛠 Features
 
-## React Compiler
+- **Immersive Glassmorphism UI:** Seamless, blurred backgrounds heavily leveraging CSS pseudo-elements and dynamic layouts.
+- **Physics Engine (Arsenal Section):** A hand-coded physics system simulating elastic bouncing and repelling interactions for technical skills in a bubble cloud.
+- **EmailJS Serverless Integration:** A fully functional 'Hire Me' contact form tied globally to the developer's direct inbox.
+- **Framer Motion Animations:** Butter-smooth viewport entry, exit, and timeline tracking transitions.
+- **Global Chatbot Action:** A natively floating WhatsApp integration anchored via custom CSS keyframes.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## 💻 Tech Stack
 
-Note: This will impact Vite dev & build performances.
+- **Framework:** React + Vite
+- **Styling:** Vanilla CSS3 + Variables + Custom Flex/Grid Systems
+- **Icons:** `lucide-react`, `react-icons`
+- **Animations:** `framer-motion`
+- **Email API:** `@emailjs/browser`
 
-## Expanding the ESLint configuration
+## ⚙️ Local Installation & Development
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+To setup the application entirely locally:
+
+1. Clone this repository natively:
+   ```bash
+   git clone https://github.com/saboor-shaiikh/Saboories-Portfolio.git
+   cd Saboories-Portfolio
+   ```
+
+2. Install all node dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Setup Environment Variables:
+   Create a `.env` root file containing your EmailJS keys:
+   ```env
+   VITE_EMAILJS_SERVICE_ID=your_id
+   VITE_EMAILJS_TEMPLATE_ID=your_id
+   VITE_EMAILJS_PUBLIC_KEY=your_key
+   ```
+
+4. Launch the local compiler:
+   ```bash
+   npm run dev
+   ```
+
+## 📜 License
+MIT License. Created by [Abdul Saboor](https://github.com/saboor-shaiikh).
