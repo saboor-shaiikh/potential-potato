@@ -1,0 +1,331 @@
+/* src/styles/Experience.css */
+
+.experience-section {
+  position: relative;
+  width: 100%;
+  padding: 6rem 2rem;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Tracker styles removed */
+
+/* Header */
+.section-header {
+  text-align: center;
+  margin-bottom: 5rem;
+}
+
+.section-title {
+  font-family: var(--font-signature);
+  font-size: clamp(3rem, 8vw, 5rem);
+  font-weight: normal;
+  color: #fff;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 30px rgba(168, 85, 247, 0.4), 0 0 10px rgba(6, 182, 212, 0.4);
+  margin: 0;
+}
+
+.section-subtitle {
+  font-family: monospace;
+  color: rgba(6, 182, 212, 0.8);
+  letter-spacing: 0.2em;
+  margin-top: 0.5rem;
+}
+
+.timeline-container {
+  position: relative;
+  width: 100%;
+  max-width: 1400px; /* Expanded for desktop */
+  height: 1800px; /* High min-height so cards have great distance */
+  margin: 0 auto;
+}
+
+/* Central Axis */
+.timeline-axis {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.4), transparent);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.year-marker {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.year-node {
+  width: 12px;
+  height: 12px;
+  background-color: var(--bg-base);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+  z-index: 2;
+}
+
+.year-label {
+  position: absolute;
+  left: 50%;
+  top: -24px;
+  transform: translateX(-50%);
+  font-family: var(--font-primary);
+  font-size: 0.85rem;
+  color: var(--text-sub);
+  background: rgba(3, 3, 7, 0.8);
+  padding: 0.2rem 0.8rem;
+  border-radius: 50px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Timeline Wrappers (Absolute Positioned by Math) */
+.timeline-items {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+}
+
+.timeline-card-wrapper {
+  position: absolute;
+  width: calc(50% - 60px); /* Massive gap for axis lasers */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* keep cards centered on their mathematical epoch */
+}
+
+.timeline-card-wrapper.left {
+  left: 0;
+  align-items: flex-end;
+}
+
+.timeline-card-wrapper.right {
+  right: 0;
+  align-items: flex-start;
+}
+
+/* The visual card itself */
+.timeline-card {
+  position: relative;
+  width: 100%;
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+  background: rgba(8, 8, 14, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s ease;
+}
+
+.timeline-card:hover {
+  background: rgba(15, 15, 25, 0.6);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.05);
+  transform: translateY(-5px);
+}
+
+.card-hud-border {
+  display: none;
+}
+
+/* Badge Accent */
+.card-accent-badge {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  padding: 0.3rem 1rem;
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 5;
+}
+
+.accent-dot {
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  margin-right: 8px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+
+.accent-text {
+  font-size: 0.75rem;
+  color: var(--text-sub);
+  letter-spacing: 0.1em;
+  font-family: var(--font-primary);
+}
+
+.card-content {
+  position: relative;
+  z-index: 2;
+  margin-top: 1rem;
+}
+
+.card-top-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-title {
+  font-family: var(--font-primary);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  background-image: linear-gradient(135deg, #fff 0%, #06b6d4 100%);
+  margin: 0;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+}
+
+.duration-pill {
+  display: inline-block;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.2rem 0.8rem;
+  border-radius: 50px;
+  align-self: flex-start;
+}
+
+.pill-text {
+  font-family: var(--font-primary);
+  font-size: 0.75rem;
+  color: var(--text-sub);
+  letter-spacing: 0.05em;
+}
+
+.card-company {
+  font-family: var(--font-primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #a855f7;
+  margin: 0;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+}
+
+.card-desc {
+  display: block;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px dotted rgba(255, 255, 255, 0.05);
+  font-family: var(--font-fallback);
+  font-size: 0.95rem;
+  color: var(--text-sub);
+  line-height: 1.6;
+  position: relative;
+}
+
+.card-desc::before {
+  content: "✧";
+  color: rgba(255, 255, 255, 0.4);
+  margin-right: 10px;
+  font-size: 0.8rem;
+}
+
+/* Horizontal Axis Connector Rays */
+.connection-line {
+  position: absolute;
+  top: 50%; 
+  width: 60px;
+  height: 1px;
+  z-index: 1;
+}
+
+.left .connection-line {
+  right: -60px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.4), transparent);
+}
+
+.right .connection-line {
+  left: -60px;
+  background: linear-gradient(270deg, rgba(255, 255, 255, 0.4), transparent);
+}
+
+.laser-dot {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.left .laser-dot {
+  left: 0;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.right .laser-dot {
+  right: 0;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+  .experience-section {
+    padding: 3rem 1rem;
+  }
+
+  .timeline-container {
+    height: auto; 
+  }
+  
+  .timeline-axis {
+    left: 20px;
+    transform: none;
+    height: 100%;
+  }
+  
+  .year-marker {
+    display: none; 
+  }
+  
+  .timeline-items {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    height: auto;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .timeline-card-wrapper {
+    position: relative !important;
+    top: auto !important;
+    height: auto !important;
+    width: calc(100% - 40px) !important;
+    left: 40px !important;
+    align-items: flex-start !important;
+  }
+  
+  .connection-line {
+    display: none;
+  }
+}

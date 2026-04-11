@@ -1,0 +1,111 @@
+/* src/styles/Arsenal.css */
+
+.arsenal-section {
+  position: relative;
+  width: 100%;
+  min-height: auto; 
+  padding: 20px 0 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.arsenal-header {
+  text-align: center;
+  margin-bottom: 50px; /* Increased gap before cloud */
+  z-index: 20;
+}
+
+.arsenal-heading {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #fff 0%, #a0aec0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
+  letter-spacing: -0.02em;
+}
+
+.arsenal-subtitle {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.floating-cloud-container {
+  position: relative;
+  width: 100%;
+  max-width: 1400px;
+  height: 550px; /* Reduced to tighten space */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .arsenal-section {
+    padding: 20px 0 0;
+  }
+  .floating-cloud-container {
+    height: 380px;
+  }
+}
+
+/* Base bubble styling */
+.arsenal-bubble {
+  position: absolute;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 8, 14, 0.4); /* deep cosmic glass */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.02);
+  color: #fff;
+  cursor: pointer;
+  transform-origin: center;
+  will-change: transform;
+  /* Smooth transitions for non-positional properties */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+}
+
+.arsenal-bubble::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.arsenal-bubble:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 40px var(--hover-color, rgba(255, 255, 255, 0.1)), inset 0 0 20px rgba(255, 255, 255, 0.05);
+  z-index: 50 !important;
+}
+
+.arsenal-bubble:hover::before {
+  opacity: 1;
+}.bubble-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.bubble-icon {
+  width: 50%;
+  height: 50%;
+  filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
+}

@@ -1,0 +1,190 @@
+/* src/styles/Contact.css */
+
+.contact-section {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  padding: 8rem 2rem 6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.contact-container {
+  width: 100%;
+  max-width: 800px; /* Slimmer for elegant contact read */
+  background: rgba(8, 8, 14, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 0 20px rgba(255, 255, 255, 0.01);
+  border-radius: 24px;
+  padding: 4rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.contact-header {
+  margin-bottom: 3rem;
+}
+
+.contact-heading {
+  font-family: var(--font-signature);
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  font-weight: normal;
+  color: #fff;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+  margin: 0 0 1rem 0;
+}
+
+.contact-tagline {
+  font-family: var(--font-primary);
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  color: var(--text-sub);
+  letter-spacing: 0.05em;
+  font-style: italic;
+  font-weight: 300;
+  opacity: 0.8;
+}
+
+.contact-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.input-group {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.contact-input, .contact-textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem 0;
+  color: #fff;
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.contact-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.contact-input::placeholder, .contact-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+  font-family: var(--font-primary);
+  letter-spacing: 0.05em;
+}
+
+.contact-input:focus, .contact-textarea:focus {
+  border-bottom-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 10px -10px rgba(255, 255, 255, 0.2);
+}
+
+.contact-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.hire-submit-btn {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50px;
+  padding: 1rem 3rem;
+  font-family: var(--font-primary);
+  font-size: 1.1rem;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.02);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.hire-submit-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.15), inset 0 0 15px rgba(255, 255, 255, 0.05);
+  transform: translateY(-3px);
+}
+
+.hire-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.action-divider {
+  font-family: var(--font-fallback);
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.email-direct-btn {
+  text-decoration: none;
+  font-family: var(--font-primary);
+  color: #06b6d4;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgba(6, 182, 212, 0.3);
+  transition: all 0.3s ease;
+}
+
+.email-direct-btn:hover {
+  color: #fff;
+  border-bottom-color: #fff;
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.8);
+}
+
+.status-message {
+  margin-top: 1.5rem;
+  font-family: var(--font-primary);
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+}
+
+.status-success {
+  color: #10b981;
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+.status-error {
+  color: #ef4444;
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+}
+
+@media (max-width: 768px) {
+  .contact-section {
+    padding: 2rem 1rem 3rem;
+  }
+  .contact-container {
+    padding: 2.5rem 1.25rem;
+    border-radius: 20px;
+  }
+  .contact-heading {
+    font-size: 2.5rem;
+  }
+}
